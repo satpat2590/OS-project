@@ -113,36 +113,6 @@ public:
 
     return {true, RES_OK, {}};
 
-    // if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
-    //   return {false, RES_ERR_REQ_FMT, {}};
-    // }
-
-    // std::vector<uint8_t> SALT(LEN_SALT);
-    // int r = RAND_bytes(SALT.data(), SALT.size());
-
-    // if (r == 0)
-    //   cerr << "Error when creating salt:: cerr";
-    
-
-    // std::vector<uint8_t> toHash;  
-
-    // toHash.insert(toHash.end(), pass.begin(), pass.end());
-    // toHash.insert(toHash.end(), SALT.begin(), SALT.end());
-
-    // std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
-    
-    // SHA256_CTX sha256;
-    // SHA256_Init(&sha256);
-    // SHA256_Update(&sha256, toHash.data(), toHash.size());
-    // SHA256_Final(hash.data(), &sha256);
-
-    
-    // AuthTableEntry newUser = {user, SALT, hash, {}};
-    // if (!this->auth_table->insert(user, newUser, [] () {})) 
-    //   return result_t{false, RES_ERR_USER_EXISTS, {}}; 
-   
-
-    // return result_t{true, RES_OK, {}};
     // NB: These asserts are to prevent compiler warnings
     assert(user.length() > 0);
     assert(pass.length() > 0);
@@ -220,15 +190,6 @@ public:
   ///
   /// @return A result tuple, as described in storage.h
   virtual result_t get_all_users(const string &user, const string &pass) {
-    // if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
-    //   return {false, RES_ERR_REQ_FMT, {}};
-    // }
-    // auto liar = auth(user, pass);
-    // if (!liar.succeeded)
-    //   return liar; // grrrrr we hate liars
-
-
-
 
     if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
       return {false, RES_ERR_REQ_FMT, {}};
@@ -303,29 +264,11 @@ public:
       SHA256_Update(&sha256, data.data(), data.size());
       SHA256_Final(hash.data(), &sha256);
 
-    if (passHashG != hash) {
+    if (passHashG != hash) 
       return result_t{false, RES_ERR_LOGIN, {}};
-    }
+    
 
     return result_t{true, RES_OK, {}};
-
-    // bool auth = false;
-    // if (this->auth_table->do_with_readonly(user, [&user, &pass, &auth](const AuthTableEntry &val) {
-    //   cout << "\nuser: " << user.data() << "\npass: " << pass.data() << endl;
-    //   cout << "\nuser from val: " << val.username.data() << "\npasshash from val: " << val.pass_hash.data() << endl;
-    //   vector<uint8_t> data(LEN_PASSHASH);
-    //   data.insert(data.begin(), pass.begin(), pass.end());
-    //   data.insert(data.end(), val.salt.begin(), val.salt.end());
-    //   vector<uint8_t> hash(LEN_PASSHASH);
-    //   SHA256_CTX sha256;
-    //   SHA256_Init(&sha256);
-    //   SHA256_Update(&sha256, data.data(), data.size());
-    //   SHA256_Final(hash.data(), &sha256);
-    //   if (val.pass_hash == hash) auth = true; }))
-    // {
-    //   if (auth)
-    //     return {true, RES_OK, {}};
-    // }
 
     // return {false, RES_ERR_LOGIN, {}};
     // NB: These asserts are to prevent compiler warnings
@@ -344,14 +287,13 @@ public:
   virtual result_t kv_insert(const string &user, const string &pass,
                              const string &key, const vector<uint8_t> &val) {
 
-    if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
+    if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) 
       return {false, RES_ERR_REQ_FMT, {}};
-    }
+    
 
     auto liar = auth(user, pass);
     if (!liar.succeeded)
       return liar; // grrrrr we hate liars
-
 
     if(!this->kv_store->insert(key, val, [] () {})) 
       return {false, RES_ERR_USER_EXISTS, {}};
@@ -374,9 +316,9 @@ public:
   virtual result_t kv_get(const string &user, const string &pass,
                           const string &key) {
 
-    if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
+    if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) 
       return {false, RES_ERR_REQ_FMT, {}};
-    }
+    
 
     auto liar = auth(user, pass);
     if (!liar.succeeded)
@@ -441,9 +383,9 @@ public:
   virtual result_t kv_upsert(const string &user, const string &pass,
                              const string &key, const vector<uint8_t> &val) {
 
-      if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) {
+      if (user.length() >= LEN_UNAME || pass.length() >= LEN_PASSWORD) 
         return {false, RES_ERR_REQ_FMT, {}};
-      }
+      
 
       auto liar = auth(user, pass);
       if (!liar.succeeded)
@@ -515,6 +457,8 @@ public:
       // actual value
       addtoFile(pFile, (const char *)v.data(), v.size());
     };
+}
+
 };
 
 /// Create an empty Storage object and specify the file from which it should

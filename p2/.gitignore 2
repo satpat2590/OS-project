@@ -1,9 +1,0 @@
-.vscode/*
-obj64/*
-*.pyc
-__pycache__/*
-*.dir
-*.pub
-*.pri
-*.dat
-.DS_Store
